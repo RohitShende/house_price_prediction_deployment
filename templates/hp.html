@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;font-size:20px;}
+* {box-sizing: border-box;}
+
+input[type=text], select, textarea {
+font-size:20px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+font-size:20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+font-size:20px;
+  background-color: #45a049;
+}
+
+.container {
+font-size:20px;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+
+<h3>Apartment Price Estimation with Machine Learning</h3>
+
+<div class="container">
+  <form action="/action_page.php">
+     <H1 id="price">PRICE </H1><br/><br/>
+  
+    <label for="area">Area (sqft)</label>
+    <input type="text" id="area" name="area" placeholder="Appartment Area in Square feet..">
+
+     <label for="tf">Total Floor</label>
+    <input type="text" id="tf" name="tf" placeholder="Total Floors..">
+
+    
+    <label for="yo">Years old</label>
+    <input type="text" id="yo" name="yo" placeholder="How many years Old.">
+     <label for="lname">BHK</label>
+    <input type="text" id="bhk" name="loc" placeholder="BHK..">
+     <label for="loc">Location</label>
+    <input type="text" id="loc" name="loc" placeholder="Location ID">
+
+  <!-- <label for="country">Country</label>
+    <select id="country" name="country">
+      <option value="australia">Australia</option>
+      <option value="canada">Canada</option>
+      <option value="usa">USA</option>
+    </select> 
+
+    <label for="subject">Subject</label>
+    <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea>-->
+
+    <input id='submit' type="submit" value="Submit">
+  </form>
+</div>
+
+<script type="text/javascript">
+    
+    $('#submit').click(function(event){    
+    event.preventDefault();     
+                       var exist_response = $.ajax({type:"GET",url:"/predict",data:"sqft="+$('#area').val()+"&yo="+$('#yo').val()+"&tf="+$('#tf').val()+"&bhk="+$('#bhk').val()+"&place="+$('#loc').val()
+,async: false}).responseText;
+  $('#price').text("PRICE : Rs. "+exist_response);
+    });
+    
+    
+    
+
+</script>
+
+
+</body>
+</html>

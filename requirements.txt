@@ -1,0 +1,8 @@
+Flask
+gunicorn
+uvicorn
+fastapi
+numpy
+scikit-learn
+joblib
+marshmallow
