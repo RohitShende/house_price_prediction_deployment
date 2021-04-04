@@ -6,3 +6,4 @@ numpy
 scikit-learn
 joblib
 marshmallow
+flask_cors
