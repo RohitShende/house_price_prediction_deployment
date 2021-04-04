@@ -5,11 +5,11 @@
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {font-family: Arial, Helvetica, sans-serif;font-size:20px;}
+body {font-family: Arial, Helvetica, sans-serif;font-size:18px;}
 * {box-sizing: border-box;}
 
-input[type=text], select, textarea {
-font-size:20px;
+input[type=text], input[type=number], select, textarea {
+font-size:18px;
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;
@@ -21,7 +21,7 @@ font-size:20px;
 }
 
 input[type=submit] {
-font-size:20px;
+font-size:18px;
   background-color: #4CAF50;
   color: white;
   padding: 12px 20px;
@@ -31,68 +31,76 @@ font-size:20px;
 }
 
 input[type=submit]:hover {
-font-size:20px;
+font-size:18px;
   background-color: #45a049;
 }
 
 .container {
-font-size:20px;
+font-size:18px;
   border-radius: 5px;
   background-color: #f2f2f2;
-  padding: 20px;
+  padding: 10px;
 }
 </style>
 </head>
 <body>
 
-<h3>Apartment Price Estimation with Machine Learning</h3>
+<h2>Apartment Price Estimation in Bangalore with Machine Learning</h2>
 
 <div class="container">
   <form action="/action_page.php">
-     <H1 id="price">PRICE </H1><br/><br/>
+    <h3 id="price" style="text-align: center;"> ESTIMATED PRICE: </h3>
   
     <label for="area">Area (sqft)</label>
-    <input type="text" id="area" name="area" placeholder="Appartment Area in Square feet..">
+    <input type="number" id="area" name="area" placeholder="Appartment Area in Square feet..">
 
      <label for="tf">Total Floor</label>
-    <input type="text" id="tf" name="tf" placeholder="Total Floors..">
+    <input type="number" id="floor" name="floor" placeholder="Total Floors..">
 
     
     <label for="yo">Years old</label>
-    <input type="text" id="yo" name="yo" placeholder="How many years Old.">
-     <label for="lname">BHK</label>
-    <input type="text" id="bhk" name="loc" placeholder="BHK..">
-     <label for="loc">Location</label>
-    <input type="text" id="loc" name="loc" placeholder="Location ID">
+    <input type="number" id="old" name="old" placeholder="How many years Old.">
 
-  <!-- <label for="country">Country</label>
-    <select id="country" name="country">
-      <option value="australia">Australia</option>
-      <option value="canada">Canada</option>
-      <option value="usa">USA</option>
-    </select> 
+    <label for="lname">BHK</label>
+    <input type="number" id="bhk" name="loc" placeholder="BHK..">
 
-    <label for="subject">Subject</label>
-    <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea>-->
+    <label for="loc">Location</label>
+    <input type="number" id="loc" name="loc" placeholder="Location ID">
 
     <input id='submit' type="submit" value="Submit">
   </form>
 </div>
 
 <script type="text/javascript">
-    
-    $('#submit').click(function(event){    
-    event.preventDefault();     
-                       var exist_response = $.ajax({type:"GET",url:"/predict",data:"sqft="+$('#area').val()+"&yo="+$('#yo').val()+"&tf="+$('#tf').val()+"&bhk="+$('#bhk').val()+"&place="+$('#loc').val()
-,async: false}).responseText;
-  $('#price').text("PRICE : Rs. "+exist_response);
+  
+  $('#submit').click(function(event){    
+    event.preventDefault();  
+    data = {
+        "location": parseInt($('#loc').val()),
+        "bhk": parseInt($('#bhk').val()),
+        "area": parseInt($('#area').val()), 
+        "old" : parseInt($('#old').val()),
+        "floor": parseInt($('#floor').val()) 
+    }
+    data = JSON.stringify(data);
+    console.log(data);
+
+    $.ajax({
+      type: "POST",
+      url: "/predict",
+      data: data,
+      dataType: "json",
+      contentType: 'application/json',
+      success: function (response) {
+        console.log(response);
+        exist_response = response.price;
+        $('#price').text("ESTIMATED PRICE : Rs. "+exist_response);
+      }
     });
-    
-    
-    
+
+  });
 
 </script>
-
 
 </body>
 </html>

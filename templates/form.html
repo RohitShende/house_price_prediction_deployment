@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        form {
+            border-radius: 5px !important;
+            background-color: #f2f2f2 !important;
+            padding: 20px !important;
+        }
+    </style>
+    <title>Apartment Price Prediction</title>
+  </head>
+  <body>
+
+    <div class="collapse" id="navbarToggleExternalContent">
+        <div class="bg-dark p-4">
+          <h5 class="text-white h4">Apartment Price Prediction</h5>
+          <span class="text-muted">Predict the prices of apartments in Bangalore</span>
+        </div>
+      </div>
+      <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span> <span></span><i class="fa fa-home" aria-hidden="true"></i> Bangalore Apartment Price Prediction
+          </button>
+        </div>
+      </nav>
+      <br>
+      <div class="container-md">
+            <h3 style="text-align: center;"> Predicted Price : <i id="price"></i></h3>
+            <form>
+                <div class="mb-3">
+                    <label for="area" class="form-label">Area (sqft)</label>
+                    <input class="form-control" id="area" type="number" placeholder="Area of appartment in sqft.." aria-label="">
+                </div>
+
+                <div class="mb-3">
+                    <label for="floor" class="form-label">Total floors</label>
+                    <input class="form-control" id="floor" type="number" placeholder="Total floors.." aria-label="">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="old" class="form-label">Years Old</label>
+                    <input class="form-control" id="old" type="number" placeholder="How many years old.." aria-label="">
+                </div>
+
+                <div class="mb-3">
+                    <label for="bhk" class="form-label">BHK</label>
+                    <input class="form-control" id="bhk" type="number" placeholder="BHK" aria-label="">
+                </div>
+
+                <div class="mb-3">
+                    <label for="loc" class="form-label">Location</label>
+                    <!-- <input class="form-control" id="loc" type="number" placeholder="Location ID" aria-label=""> -->
+                    <select class="form-select form-select-md mb-3" id="loc" aria-label=".form-select-md example">
+                      <option value="0" selected>Abbaiah Reddy Layout</option>
+                      <option value="1">Ambalipura</option>
+                      <option value="2">BTM Layout</option>
+                      <option value="3">Devarabeesana Halli</option>
+                      <option value="4">Electronics City Phase 1</option>
+                      <option value="5">Frazer Town</option>
+                      <option value="6">Gunjur</option>
+                      <option value="7">KR Puram</option>
+                      <option value="8">Malleshwaram</option>
+                      <option value="9">Rajaji Nagar</option>
+                      <option value="10">Sarakki Nagar</option>
+                      <option value="11">Subramanyapura</option>
+                      <option value="12">Whitefield</option>
+                      <option value="13">Yelachenahalli</option>
+                      <option value="14">Yelahanka</option>
+                    </select>
+
+                </div>
+
+                <button type="submit" id="submit" class="btn btn-success">Predict</button>
+            </form>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
+    -->
+  </body>
+
+  <script type="text/javascript">
+  
+    $('#submit').click(function(event){    
+      event.preventDefault();  
+      data = {
+          "location": parseInt($('#loc').val()),
+          "bhk": parseInt($('#bhk').val()),
+          "area": parseInt($('#area').val()), 
+          "old" : parseInt($('#old').val()),
+          "floor": parseInt($('#floor').val()) 
+      }
+      data = JSON.stringify(data);
+      console.log(data);
+  
+      $.ajax({
+        type: "POST",
+        url: "/predict",
+        data: data,
+        dataType: "json",
+        contentType: 'application/json',
+        success: function (response) {
+          console.log(response);
+          exist_response = response.price;
+          $('#price').text("Rs. "+exist_response);
+        }
+      });
+  
+    });
+  
+  </script>
+</html>

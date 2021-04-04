@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import joblib
-import json
 from marshmallow import Schema, fields, ValidationError
 
-
 app = Flask(__name__)
+app.config["DEBUG"] = True
 model = joblib.load('house_price_prediction_trained_model.pkl')
+
 
 class ParameterSchema(Schema):
     location = fields.Integer(required=True)
@@ -15,15 +15,13 @@ class ParameterSchema(Schema):
     floor = fields.Integer(required=True)
 
 
-@app.route('/')
-def index():
-    return 'Hello world'
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('form.html')
 
 
-
-@app.route('/predict',methods = ['POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
-
     # Get Request body from JSON
     request_data = request.json
     schema = ParameterSchema()
@@ -41,10 +39,10 @@ def predict():
     area = reqParam['area']
     old = reqParam['old']
     floor = reqParam['floor']
-    
+
     returnJson = {}
     # predicting from model
-    returnJson['price'] = model.predict(
+    returnJson['price'] = round(model.predict(
         [[
             location,
             bhk,
@@ -52,9 +50,10 @@ def predict():
             old,
             floor,
         ]]
-    )[0]
-    
+    )[0], 0)
+
     return jsonify(returnJson)
 
+
 if __name__ == '__main__':
-   app.run(threaded=True, port=5000)
+    app.run(threaded=True, port=5000)
